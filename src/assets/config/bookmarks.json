@@ -1,12 +1,12 @@
 [
   {
-    "title": "Web3",
+    "title": "Web3工具",
     "menuIcon": "😻",
     "items": [
       {
         "title": "BSC链查询工具",
         "link": "45.77.180.218",
-        "favicon": "https://public.bnbstatic.com/static/images/common/favicon.ico"
+        "favicon": "/src/assets/icons/bsc链查询工具.ico"
       }
     ]
   },
@@ -17,52 +17,52 @@
       {
         "title": "Ethereum",
         "link": "ethereum.org",
-        "favicon": "https://ethereum.org/favicon.ico"
+        "favicon": "/src/assets/icons/ethereum.ico"
       },
       {
         "title": "Solana",
         "link": "solana.com",
-        "favicon": "https://solana.com/favicon.ico"
+        "favicon": "/src/assets/icons/solana.ico"
       },
       {
         "title": "Binance",
         "link": "binance.com",
-        "favicon": "https://public.bnbstatic.com/static/images/common/favicon.ico"
+        "favicon": "/src/assets/icons/binance.ico"
       },
       {
         "title": "Coinbase",
         "link": "coinbase.com",
-        "favicon": "https://www.coinbase.com/favicon.ico"
+        "favicon": "/src/assets/icons/coinbase.ico"
       },
       {
         "title": "MetaMask",
         "link": "metamask.io",
-        "favicon": "https://metamask.io/favicon.ico"
+        "favicon": "/src/assets/icons/metamask.ico"
       },
       {
         "title": "OpenSea",
         "link": "opensea.io",
-        "favicon": "https://opensea.io/favicon.ico"
+        "favicon": "/src/assets/icons/opensea.ico"
       },
       {
         "title": "Uniswap",
         "link": "uniswap.org",
-        "favicon": "https://uniswap.org/favicon.ico"
+        "favicon": "/src/assets/icons/uniswap.ico"
       },
       {
         "title": "CoinMarketCap",
         "link": "coinmarketcap.com",
-        "favicon": "https://coinmarketcap.com/favicon.ico"
+        "favicon": "/src/assets/icons/coinmarketcap.ico"
       },
       {
         "title": "CoinGecko",
         "link": "coingecko.com",
-        "favicon": "https://www.coingecko.com/favicon.ico"
+        "favicon": "/src/assets/icons/coingecko.ico"
       },
       {
         "title": "Etherscan",
         "link": "etherscan.io",
-        "favicon": "https://etherscan.io/favicon.ico"
+        "favicon": "/src/assets/icons/etherscan.ico"
       }
     ]
   }

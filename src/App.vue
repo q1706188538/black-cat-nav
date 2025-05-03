@@ -223,23 +223,27 @@ onMounted(() => {
 
           <!-- 主页内容 -->
           <div v-if="activeMenu === 'home'">
-            <!-- Web3分组 -->
-            <n-card class="group-card" title="Web3" :bordered="false">
+            <!-- Web3工具分组 -->
+            <n-card class="group-card" title="Web3工具" :bordered="false">
               <template #header-extra>
                 <span class="category-icon">😻</span>
               </template>
-              <n-grid :cols="5" :x-gap="16" :y-gap="16" responsive="screen" item-responsive>
-                <n-grid-item v-for="item in getBookmarksByCategory('Web3')" :key="item.title">
+              <n-grid :x-gap="20" :y-gap="20" :cols="5" style="width: 100%;">
+                <n-grid-item v-for="item in getBookmarksByCategory('Web3工具')" :key="item.title">
                   <div class="bookmark-card" @click="openLink(item.link)">
                     <div class="bookmark-icon">
                       <img
                         :src="item.favicon"
                         class="favicon"
                         :alt="item.title"
-                        @error="e => e.target.src = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${item.title.charAt(0)}</text></svg>`"
+                        @error="e => {
+                          console.log('Error loading icon:', item.favicon);
+                          e.target.src = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${item.title.charAt(0)}</text></svg>`;
+                        }"
+                        @load="() => console.log('Icon loaded successfully:', item.favicon)"
                       />
                     </div>
-                    <div class="bookmark-title">{{ item.title }}</div>
+                    <div class="bookmark-title" :title="item.title">{{ item.title }}</div>
                   </div>
                 </n-grid-item>
               </n-grid>
@@ -250,7 +254,7 @@ onMounted(() => {
               <template #header-extra>
                 <span class="category-icon">😸</span>
               </template>
-              <n-grid :cols="5" :x-gap="16" :y-gap="16" responsive="screen" item-responsive>
+              <n-grid :x-gap="20" :y-gap="20" :cols="5" style="width: 100%;">
                 <n-grid-item v-for="item in getBookmarksByCategory('常用网站')" :key="item.title">
                   <div class="bookmark-card" @click="openLink(item.link)">
                     <div class="bookmark-icon">
@@ -258,10 +262,14 @@ onMounted(() => {
                         :src="item.favicon"
                         class="favicon"
                         :alt="item.title"
-                        @error="e => e.target.src = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${item.title.charAt(0)}</text></svg>`"
+                        @error="e => {
+                          console.log('Error loading icon:', item.favicon);
+                          e.target.src = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${item.title.charAt(0)}</text></svg>`;
+                        }"
+                        @load="() => console.log('Icon loaded successfully:', item.favicon)"
                       />
                     </div>
-                    <div class="bookmark-title">{{ item.title }}</div>
+                    <div class="bookmark-title" :title="item.title">{{ item.title }}</div>
                   </div>
                 </n-grid-item>
               </n-grid>
@@ -369,8 +377,13 @@ html, body {
   padding: 0;
   height: 100%;
   width: 100%;
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: var(--font-family-base);
+  color: var(--text-color);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  line-height: 1.6;
 }
 
 #app {
@@ -392,6 +405,10 @@ html, body {
   --sidebar-bg-color: #f5f5f5;
   --main-bg-color: #f5f5f5;
   --border-color: rgba(128, 128, 128, 0.1);
+  --font-family-base: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-family-heading: 'Poppins', 'Noto Sans SC', sans-serif;
+  --text-color: rgba(0, 0, 0, 0.85);
+  --text-color-secondary: rgba(0, 0, 0, 0.65);
 }
 
 /* 暗色模式变量 */
@@ -400,6 +417,8 @@ html, body {
   --sidebar-bg-color: #18181c !important;
   --main-bg-color: #18181c !important;
   --border-color: rgba(128, 128, 128, 0.2) !important;
+  --text-color: rgba(255, 255, 255, 0.85) !important;
+  --text-color-secondary: rgba(255, 255, 255, 0.65) !important;
 }
 
 /* 直接设置暗色模式背景 */
@@ -432,14 +451,17 @@ html, body {
 .custom-layout {
   display: flex;
   min-height: 100vh;
-  width: 100%;
+  width: 100vw; /* 使用视口宽度单位 */
+  max-width: 100vw; /* 限制最大宽度 */
   background-color: var(--main-bg-color) !important;
   position: relative;
+  overflow-x: hidden; /* 防止水平滚动条 */
 }
 
 html, body, #app, .n-config-provider {
   height: 100%;
-  width: 100%;
+  width: 100vw; /* 使用视口宽度单位 */
+  max-width: 100vw; /* 限制最大宽度 */
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -466,7 +488,9 @@ body {
 }
 
 .sidebar-collapsed {
-  width: 64px;
+  width: 64px !important;
+  min-width: 64px !important;
+  max-width: 64px !important;
 }
 
 .sidebar-collapsed .menu-icon {
@@ -477,6 +501,15 @@ body {
 .sidebar-collapsed .menu-item {
   justify-content: center;
   padding: 12px 0;
+  overflow: hidden;
+}
+
+.sidebar-collapsed .menu-label {
+  display: none;
+}
+
+.sidebar-collapsed .logo-text {
+  display: none;
 }
 
 .sidebar-toggle {
@@ -501,18 +534,25 @@ body {
 .custom-main-content {
   flex: 1;
   margin-left: 64px; /* 默认使用折叠侧边栏的宽度 */
-  width: calc(100% - 64px);
+  width: calc(100vw - 64px); /* 使用视口宽度单位 */
   transition: margin-left 0.3s, width 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* 确保内容不会溢出 */
+  box-sizing: border-box; /* 确保内边距和边框不会增加元素的宽度 */
+  overflow-x: hidden; /* 防止水平滚动条 */
 }
 
 .main-with-collapsed-sidebar {
   margin-left: 64px;
-  width: calc(100% - 64px);
+  width: calc(100vw - 64px); /* 使用视口宽度单位 */
+  min-width: 0; /* 确保内容不会溢出 */
 }
 
 .main-with-expanded-sidebar {
   margin-left: 240px;
-  width: calc(100% - 240px);
+  width: calc(100vw - 240px); /* 使用视口宽度单位 */
+  min-width: 0; /* 确保内容不会溢出 */
 }
 
 .logo-container {
@@ -527,7 +567,9 @@ body {
   display: flex;
   align-items: center;
   font-size: 1.2rem;
-  font-weight: bold;
+  font-weight: 600;
+  font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .cat-emoji {
@@ -574,6 +616,8 @@ body {
 
 .menu-label {
   font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .theme-switch-container {
@@ -590,17 +634,23 @@ body {
   position: sticky;
   top: 0;
   z-index: 90;
+  width: 100%; /* 确保头部能够铺满宽度 */
+  box-sizing: border-box;
 }
 
 .header-content {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  /* 移除最大宽度限制，让内容铺满屏幕 */
+  margin: 0 auto;
 }
 
 .search-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .search-input {
@@ -621,6 +671,16 @@ body {
   max-width: 100%;
   box-sizing: border-box;
   background-color: var(--main-bg-color) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* 改为stretch，让内容拉伸填满容器 */
+  flex: 1; /* 添加flex: 1，确保内容区域能够填满主内容区 */
+  min-width: 0; /* 确保内容不会溢出 */
+}
+
+.content > div {
+  width: 100%;
+  /* 移除最大宽度限制，让内容铺满屏幕 */
 }
 
 .main-layout {
@@ -630,10 +690,25 @@ body {
 
 .n-layout {
   background-color: var(--main-bg-color) !important;
+  width: 100% !important;
+  min-width: 0 !important;
 }
 
 .n-layout-scroll-container {
   background-color: var(--main-bg-color) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 确保网格组件铺满容器 */
+.n-grid {
+  width: 100% !important;
+}
+
+/* 确保网格项目正确排列 */
+.n-grid-item {
+  width: 20% !important; /* 5列布局，每列占20% */
+  box-sizing: border-box !important;
 }
 
 /* 分组卡片样式 */
@@ -642,8 +717,15 @@ body {
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
-  width: 100%;
+  width: 100% !important;
   overflow: hidden;
+  min-width: 0; /* 确保内容不会溢出 */
+  box-sizing: border-box;
+}
+
+/* 确保所有卡片组件铺满容器 */
+.n-card {
+  width: 100% !important;
 }
 
 .group-card:hover {
@@ -651,15 +733,19 @@ body {
 }
 
 .n-card__content {
-  padding: 16px !important;
+  padding: 20px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .category-title {
   font-size: 1.2rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
+  font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .category-icon {
@@ -682,9 +768,12 @@ body {
 
 .about-section h3 {
   font-size: 1.3rem;
+  font-weight: 600;
   margin-bottom: 16px;
   border-left: 4px solid var(--primary-color);
   padding-left: 12px;
+  font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .feature-item {
@@ -714,13 +803,22 @@ body {
 
 .feature-content h4 {
   font-size: 1.1rem;
+  font-weight: 600;
   margin-top: 0;
   margin-bottom: 8px;
+  font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+  letter-spacing: 0.3px;
 }
 
 .feature-content p {
   margin: 0;
   line-height: 1.6;
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.n-config-provider.n-config-provider--theme-dark .feature-content p {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .about-footer {
@@ -832,6 +930,8 @@ body {
   transition: all 0.3s;
   height: 100%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-height: 130px; /* 确保卡片有足够的高度显示两行文本 */
+  justify-content: center; /* 垂直居中内容 */
 }
 
 .bookmark-card:hover {
@@ -855,17 +955,38 @@ body {
   border-radius: 8px;
 }
 
-.bookmark-title {
-  font-size: 0.9rem;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100%;
+/* SVG图标样式 */
+.favicon[src$=".svg"] {
+  padding: 4px;
+  background-color: #fff;
+  border-radius: 8px;
 }
 
-/* 响应式调整 */
-@media (max-width: 768px) {
+.n-config-provider.n-config-provider--theme-dark .favicon[src$=".svg"] {
+  background-color: #333;
+}
+
+.bookmark-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  overflow: hidden;
+  width: 100%;
+  /* 自动换行设置 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 限制最多显示2行 */
+  -webkit-box-orient: vertical;
+  white-space: normal; /* 允许文本换行 */
+  word-break: break-word; /* 允许在单词内换行 */
+  hyphens: auto; /* 自动添加连字符 */
+  line-height: 1.3;
+  max-height: 2.6em; /* 约等于2行文字的高度 */
+  letter-spacing: 0.3px;
+  margin-top: 4px;
+}
+
+/* 响应式调整 - 移动设备 */
+@media (min-width: 481px) and (max-width: 767px) {
   .content {
     padding: 16px;
     width: 100% !important;
@@ -884,9 +1005,12 @@ body {
   }
 
   .sidebar-collapsed {
-    transform: translateX(-100%); /* 折叠时完全隐藏 */
+    transform: translateX(-100%) !important; /* 折叠时完全隐藏 */
     width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
     border-right: none;
+    overflow: hidden !important;
   }
 
   .sidebar-toggle {
@@ -953,12 +1077,13 @@ body {
   }
 
   .n-grid {
-    --n-cols-xs: 2 !important;
-    --n-cols-s: 2 !important;
-    --n-cols-m: 3 !important;
-    --n-cols-l: 4 !important;
-    --n-cols-xl: 5 !important;
-    --n-cols-xxl: 6 !important;
+    --n-cols: 3 !important; /* 移动设备上显示3列 */
+  }
+
+  /* 使用CSS选择器覆盖组件的内联样式 */
+  .n-grid-item {
+    width: calc(100% / 3) !important;
+    max-width: calc(100% / 3) !important;
   }
 
   .header {
@@ -969,13 +1094,22 @@ body {
     width: 100%;
   }
 
+  .bookmark-card {
+    padding: 10px 8px;
+    min-height: 110px; /* 移动设备上减小最小高度 */
+  }
+
   .bookmark-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 8px;
   }
 
   .bookmark-title {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    max-height: 2.4em;
+    padding: 0 2px;
   }
 
   .group-card {
@@ -1017,6 +1151,123 @@ body {
     left: 20px;
     height: calc(100% - 40px);
     top: 80px;
+  }
+}
+
+/* 超小屏幕设备（如手机）的额外优化 */
+@media (max-width: 480px) {
+  .bookmark-card {
+    padding: 8px 4px;
+    min-height: 90px; /* 超小屏幕上进一步减小最小高度 */
+  }
+
+  .bookmark-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 6px;
+  }
+
+  .bookmark-title {
+    font-size: 0.7rem;
+    line-height: 1.1;
+    max-height: 2.2em;
+  }
+
+  .n-grid {
+    --n-cols: 2 !important; /* 超小屏幕上显示2列 */
+    gap: 8px !important;
+  }
+
+  /* 使用CSS选择器覆盖组件的内联样式 */
+  .n-grid-item {
+    width: 50% !important;
+    max-width: 50% !important;
+  }
+
+  .n-card__content {
+    padding: 8px !important;
+  }
+
+  .content {
+    padding: 8px;
+  }
+}
+
+/* 平板设备的优化 */
+@media (min-width: 768px) and (max-width: 991px) {
+  .n-grid-item {
+    width: 25% !important;
+    max-width: 25% !important;
+  }
+}
+
+/* 中等屏幕设备的优化 */
+@media (min-width: 992px) and (max-width: 1440px) {
+  .n-grid-item {
+    width: 20% !important;
+    max-width: 20% !important;
+  }
+}
+
+/* 大屏幕设备的优化 */
+@media (min-width: 1441px) and (max-width: 1920px) {
+  .n-grid-item {
+    width: 16.666% !important;
+    max-width: 16.666% !important;
+  }
+}
+
+/* 超大屏幕设备的优化 */
+@media (min-width: 1921px) {
+  .bookmark-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 16px;
+  }
+
+  .bookmark-title {
+    font-size: 1rem;
+  }
+
+  .bookmark-card {
+    min-height: 140px;
+    padding: 20px;
+  }
+
+  .n-grid {
+    gap: 24px !important;
+  }
+
+  /* 使用CSS选择器覆盖组件的内联样式 */
+  .n-grid-item {
+    width: 10% !important;
+    max-width: 10% !important;
+  }
+
+  @media (min-width: 1921px) and (max-width: 2560px) {
+    .n-grid-item {
+      width: 12.5% !important;
+      max-width: 12.5% !important;
+    }
+  }
+
+  @media (min-width: 2561px) {
+    .n-grid-item {
+      width: 10% !important;
+      max-width: 10% !important;
+    }
+  }
+
+  .content {
+    padding: 24px;
+  }
+
+  .group-card {
+    margin-bottom: 24px;
+  }
+
+  .n-card__content {
+    padding: 24px !important;
   }
 }
 </style>
