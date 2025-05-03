@@ -92,7 +92,7 @@ const updateDefaultEngine = (value) => {
 // 打开链接
 const openLink = (link) => {
   // 特殊处理BSC查询工具链接
-  if (link === "45.77.180.218") {
+  if (link === "bsc.blakcat.top") {
     window.open('http://' + link, '_blank')
     return
   }
