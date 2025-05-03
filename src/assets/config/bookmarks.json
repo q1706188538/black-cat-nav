@@ -6,7 +6,7 @@
       {
         "title": "BSC链查询工具",
         "link": "45.77.180.218",
-        "favicon": "/src/assets/icons/bsc链查询工具.ico"
+        "favicon": "/icons/bsc链查询工具.ico"
       }
     ]
   },
@@ -17,52 +17,52 @@
       {
         "title": "Ethereum",
         "link": "ethereum.org",
-        "favicon": "/src/assets/icons/ethereum.ico"
+        "favicon": "/icons/ethereum.ico"
       },
       {
         "title": "Solana",
         "link": "solana.com",
-        "favicon": "/src/assets/icons/solana.ico"
+        "favicon": "/icons/solana.ico"
       },
       {
         "title": "Binance",
         "link": "binance.com",
-        "favicon": "/src/assets/icons/binance.ico"
+        "favicon": "/icons/binance.ico"
       },
       {
         "title": "Coinbase",
         "link": "coinbase.com",
-        "favicon": "/src/assets/icons/coinbase.ico"
+        "favicon": "/icons/coinbase.ico"
       },
       {
         "title": "MetaMask",
         "link": "metamask.io",
-        "favicon": "/src/assets/icons/metamask.ico"
+        "favicon": "/icons/metamask.ico"
       },
       {
         "title": "OpenSea",
         "link": "opensea.io",
-        "favicon": "/src/assets/icons/opensea.ico"
+        "favicon": "/icons/opensea.ico"
       },
       {
         "title": "Uniswap",
         "link": "uniswap.org",
-        "favicon": "/src/assets/icons/uniswap.ico"
+        "favicon": "/icons/uniswap.ico"
       },
       {
         "title": "CoinMarketCap",
         "link": "coinmarketcap.com",
-        "favicon": "/src/assets/icons/coinmarketcap.ico"
+        "favicon": "/icons/coinmarketcap.ico"
       },
       {
         "title": "CoinGecko",
         "link": "coingecko.com",
-        "favicon": "/src/assets/icons/coingecko.ico"
+        "favicon": "/icons/coingecko.ico"
       },
       {
         "title": "Etherscan",
         "link": "etherscan.io",
-        "favicon": "/src/assets/icons/etherscan.ico"
+        "favicon": "/icons/etherscan.ico"
       }
     ]
   }
