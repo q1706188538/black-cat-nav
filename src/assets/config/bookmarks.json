@@ -1,0 +1,69 @@
+[
+  {
+    "title": "Web3",
+    "menuIcon": "😻",
+    "items": [
+      {
+        "title": "BSC链查询工具",
+        "link": "45.77.180.218",
+        "favicon": "https://public.bnbstatic.com/static/images/common/favicon.ico"
+      }
+    ]
+  },
+  {
+    "title": "常用网站",
+    "menuIcon": "😸",
+    "items": [
+      {
+        "title": "Ethereum",
+        "link": "ethereum.org",
+        "favicon": "https://ethereum.org/favicon.ico"
+      },
+      {
+        "title": "Solana",
+        "link": "solana.com",
+        "favicon": "https://solana.com/favicon.ico"
+      },
+      {
+        "title": "Binance",
+        "link": "binance.com",
+        "favicon": "https://public.bnbstatic.com/static/images/common/favicon.ico"
+      },
+      {
+        "title": "Coinbase",
+        "link": "coinbase.com",
+        "favicon": "https://www.coinbase.com/favicon.ico"
+      },
+      {
+        "title": "MetaMask",
+        "link": "metamask.io",
+        "favicon": "https://metamask.io/favicon.ico"
+      },
+      {
+        "title": "OpenSea",
+        "link": "opensea.io",
+        "favicon": "https://opensea.io/favicon.ico"
+      },
+      {
+        "title": "Uniswap",
+        "link": "uniswap.org",
+        "favicon": "https://uniswap.org/favicon.ico"
+      },
+      {
+        "title": "CoinMarketCap",
+        "link": "coinmarketcap.com",
+        "favicon": "https://coinmarketcap.com/favicon.ico"
+      },
+      {
+        "title": "CoinGecko",
+        "link": "coingecko.com",
+        "favicon": "https://www.coingecko.com/favicon.ico"
+      },
+      {
+        "title": "Etherscan",
+        "link": "etherscan.io",
+        "favicon": "https://etherscan.io/favicon.ico"
+      }
+    ]
+  }
+]

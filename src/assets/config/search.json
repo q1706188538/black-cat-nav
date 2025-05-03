@@ -1,0 +1,10 @@
+{
+  "d": ["DuckDuckGo", "https://duckduckgo.com/?q="],
+  "g": ["Google", "https://www.google.com/search?q="],
+  "b": ["Bing", "https://cn.bing.com/search?q="],
+  "w": ["Wiki", "https://zh.wikipedia.org/wiki/"],
+  "bd": ["百度", "https://www.baidu.com/s?wd="],
+  "gh": ["Github", "https://github.com/search?q="],
+  "zh": ["知乎", "https://www.zhihu.com/search?q="],
+  "bili": ["哔哩哔哩", "https://search.bilibili.com/all?keyword="]
+}
