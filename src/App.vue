@@ -148,9 +148,6 @@ onMounted(() => {
     <div class="custom-layout">
       <!-- 侧边栏 - 设置菜单 -->
       <div class="custom-sidebar" :class="{ 'sidebar-collapsed': collapsed }">
-        <div class="sidebar-toggle" @click="collapsed = !collapsed">
-          {{ collapsed ? '>' : '<' }}
-        </div>
         <div class="logo-container">
           <div class="logo">
             <span class="cat-emoji">🐈‍⬛</span>
@@ -190,28 +187,28 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- 移动设备上的汉堡菜单按钮 -->
-      <div class="mobile-menu-toggle" @click="collapsed = !collapsed" v-if="isMobile">
-        {{ collapsed ? '☰' : '✕' }}
-      </div>
+      <!-- 移动设备上使用主内容区域的汉堡菜单按钮 -->
 
       <!-- 主内容区 -->
       <div class="custom-main-content" :class="{ 'main-with-collapsed-sidebar': collapsed, 'main-with-expanded-sidebar': !collapsed }">
         <n-layout-header class="header">
           <div class="header-content">
+            <!-- 主内容区域的侧边栏切换按钮，始终可见 -->
+            <div class="main-sidebar-toggle" @click="collapsed = !collapsed">
+              <span>{{ collapsed ? '☰' : '<' }}</span>
+            </div>
             <div class="search-container">
-              <n-input
-                v-model:value="searchText"
-                placeholder="输入搜索内容，回车搜索"
-                @keydown.enter="handleSearch"
-                class="search-input"
-              >
-                <template #suffix>
-                  <n-button type="primary" @click="handleSearch">
-                    <n-icon><SearchIcon /></n-icon>
-                  </n-button>
-                </template>
-              </n-input>
+              <div class="search-input-container">
+                <n-input
+                  v-model:value="searchText"
+                  placeholder="输入搜索内容，回车搜索"
+                  @keydown.enter="handleSearch"
+                  class="search-input"
+                />
+                <n-button type="primary" class="search-button" @click="handleSearch">
+                  <n-icon><SearchIcon /></n-icon>
+                </n-button>
+              </div>
             </div>
           </div>
         </n-layout-header>
@@ -488,9 +485,11 @@ body {
 }
 
 .sidebar-collapsed {
-  width: 64px !important;
-  min-width: 64px !important;
-  max-width: 64px !important;
+  transform: translateX(-100%) !important; /* 完全隐藏侧边栏 */
+  width: 240px !important; /* 保持宽度，但通过transform隐藏 */
+  min-width: 240px !important;
+  max-width: 240px !important;
+  overflow: hidden !important;
 }
 
 .sidebar-collapsed .menu-icon {
@@ -513,12 +512,12 @@ body {
 }
 
 .sidebar-toggle {
-  position: absolute;
-  right: -15px;
+  position: fixed;
+  left: 250px; /* 侧边栏展开时的位置 */
   top: 50%;
   transform: translateY(-50%);
-  width: 30px;
-  height: 30px;
+  width: 36px; /* 与汉堡按钮保持一致 */
+  height: 36px; /* 与汉堡按钮保持一致 */
   background-color: var(--sidebar-bg-color);
   border: 1px solid var(--border-color);
   border-radius: 50%;
@@ -528,13 +527,45 @@ body {
   cursor: pointer;
   z-index: 101;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s;
+  font-size: 1.2rem; /* 与汉堡按钮保持一致 */
+}
+
+/* 当侧边栏展开时，移动主内容区域的切换按钮 */
+.custom-sidebar:not(.sidebar-collapsed) + .custom-main-content .main-sidebar-toggle {
+  left: 250px; /* 侧边栏展开时，将按钮移到侧边栏右侧 */
+}
+
+/* 主内容区域的侧边栏切换按钮 */
+.main-sidebar-toggle {
+  position: fixed; /* 改为固定定位，使其不受滚动影响 */
+  left: 0; /* 完全靠左 */
+  top: 50%; /* 垂直居中 */
+  transform: translateY(-50%);
+  width: 36px; /* 与搜索按钮保持一致 */
+  height: 36px; /* 与搜索按钮保持一致 */
+  background-color: var(--sidebar-bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 101;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1.2rem; /* 稍微增大字体 */
+  transition: transform 0.3s;
+}
+
+.main-sidebar-toggle:hover {
+  transform: translateY(-50%) scale(1.1);
 }
 
 /* 自定义主内容区样式 */
 .custom-main-content {
   flex: 1;
-  margin-left: 64px; /* 默认使用折叠侧边栏的宽度 */
-  width: calc(100vw - 64px); /* 使用视口宽度单位 */
+  margin-left: 0; /* 默认不留空间给侧边栏 */
+  width: 100vw; /* 使用视口宽度单位 */
   transition: margin-left 0.3s, width 0.3s;
   display: flex;
   flex-direction: column;
@@ -544,9 +575,10 @@ body {
 }
 
 .main-with-collapsed-sidebar {
-  margin-left: 64px;
-  width: calc(100vw - 64px); /* 使用视口宽度单位 */
+  margin-left: 0;
+  width: 100vw; /* 使用视口宽度单位 */
   min-width: 0; /* 确保内容不会溢出 */
+  transition: margin-left 0.3s, width 0.3s;
 }
 
 .main-with-expanded-sidebar {
@@ -629,7 +661,7 @@ body {
 
 /* 头部样式 */
 .header {
-  padding: 16px 24px;
+  padding: 16px 0; /* 移除水平内边距，使内容完全靠左 */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -643,18 +675,48 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  /* 移除最大宽度限制，让内容铺满屏幕 */
+  max-width: 1200px; /* 添加最大宽度，确保在超宽屏幕上内容不会过于分散 */
   margin: 0 auto;
+  position: relative; /* 添加相对定位，方便汉堡菜单的绝对定位 */
+  padding: 0 5px; /* 添加少量水平内边距，防止内容贴近屏幕边缘 */
+  box-sizing: border-box; /* 确保内边距不会增加元素的宽度 */
+  overflow: visible; /* 确保内容不会被裁剪 */
 }
 
 .search-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 450px; /* 进一步缩小搜索框的最大宽度 */
   margin: 0 auto;
+  padding-left: 45px; /* 为左侧的汉堡菜单留出更多空间 */
+  padding-right: 5px; /* 为右侧留出一点空间，防止放大镜按钮超出屏幕 */
+  box-sizing: border-box; /* 确保内边距不会增加元素的宽度 */
 }
 
 .search-input {
   font-size: 1rem;
+}
+
+/* 搜索框容器样式 */
+.search-input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.search-input {
+  flex: 1;
+}
+
+.search-button {
+  margin-left: 4px; /* 减小左边距，防止超出屏幕 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
 }
 
 .search-tip {
@@ -1026,22 +1088,17 @@ body {
     width: 100% !important;
   }
 
-  /* 添加一个汉堡菜单按钮在移动设备上 */
-  .mobile-menu-toggle {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1001;
-    width: 40px;
-    height: 40px;
-    background-color: var(--sidebar-bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* 移动设备上使用主内容区域的汉堡菜单按钮 */
+  .main-sidebar-toggle {
+    width: 36px; /* 与搜索按钮保持一致 */
+    height: 36px; /* 与搜索按钮保持一致 */
+    font-size: 1.2rem;
+    left: 0;
+  }
+
+  /* 侧边栏展开时，移动设备上的按钮位置 */
+  .custom-sidebar:not(.sidebar-collapsed) + .custom-main-content .main-sidebar-toggle {
+    left: 0; /* 在移动设备上，即使侧边栏展开，按钮也保持在左侧 */
   }
 
   .main-with-collapsed-sidebar {
@@ -1087,12 +1144,17 @@ body {
   }
 
   .header {
-    padding: 12px;
+    padding: 12px 0; /* 移除水平内边距，使内容完全靠左 */
   }
 
   .search-container {
     width: 100%;
+    max-width: 380px; /* 移动设备上进一步减小搜索框的最大宽度 */
+    padding-left: 42px; /* 为左侧的汉堡菜单留出更多空间 */
+    padding-right: 5px; /* 为右侧留出一点空间 */
   }
+
+  /* 移动设备上的搜索按钮样式已移至全局样式 */
 
   .bookmark-card {
     padding: 10px 8px;
@@ -1159,6 +1221,26 @@ body {
   .bookmark-card {
     padding: 8px 4px;
     min-height: 90px; /* 超小屏幕上进一步减小最小高度 */
+  }
+
+  .search-container {
+    max-width: 320px; /* 超小屏幕上进一步减小搜索框的最大宽度 */
+    padding-left: 38px; /* 为左侧的汉堡菜单留出空间 */
+    padding-right: 4px; /* 为右侧留出一点空间 */
+  }
+
+  .search-button {
+    margin-left: 2px; /* 超小屏幕上进一步减小左边距 */
+    min-width: 32px !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .main-sidebar-toggle {
+    width: 32px; /* 超小屏幕上稍微减小，但仍保持与搜索按钮协调 */
+    height: 32px; /* 超小屏幕上稍微减小，但仍保持与搜索按钮协调 */
+    font-size: 1.1rem;
+    left: 0;
   }
 
   .bookmark-icon {
