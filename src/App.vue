@@ -157,8 +157,8 @@ onMounted(() => {
 
         <div class="menu-container">
           <div class="menu-item" :class="{ active: activeMenu === 'home' }" @click="activeMenu = 'home'">
-            <div class="menu-icon">🏠</div>
-            <div class="menu-label" v-if="!collapsed">首页</div>
+            <div class="menu-icon">🔍</div>
+            <div class="menu-label" v-if="!collapsed">查询</div>
           </div>
           <div class="menu-item" :class="{ active: activeMenu === 'about' }" @click="activeMenu = 'about'">
             <div class="menu-icon">ℹ️</div>
