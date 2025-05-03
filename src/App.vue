@@ -40,8 +40,9 @@ const isDarkMode = ref(true) // 默认黑猫主题为暗色模式
 const searchText = ref('')
 const bookmarks = reactive(bookmarksData)
 const activeCategory = ref(null)
-const collapsed = ref(false) // 侧边栏是否折叠
+const collapsed = ref(true) // 侧边栏默认折叠
 const activeMenu = ref('home') // 默认显示首页
+const isMobile = ref(false) // 是否为移动设备
 
 // 搜索引擎相关
 const defaultEngine = ref('bd') // 默认使用百度
@@ -128,24 +129,28 @@ const handleMenuSelect = (key) => {
 onMounted(() => {
   // 默认显示Web3侧边栏
   activeCategory.value = "Web3"
+
+  // 检测设备类型
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 768
+  }
+
+  // 初始检测
+  checkMobile()
+
+  // 监听窗口大小变化
+  window.addEventListener('resize', checkMobile)
 })
 </script>
 
 <template>
-  <n-config-provider :theme="isDarkMode ? darkTheme : null" class="theme-provider">
-    <n-layout class="layout" has-sider position="absolute">
+  <n-config-provider :theme="isDarkMode ? darkTheme : null" :class="['theme-provider', isDarkMode ? 'n-config-provider--theme-dark' : '']">
+    <div class="custom-layout">
       <!-- 侧边栏 - 设置菜单 -->
-      <n-layout-sider
-        bordered
-        collapse-mode="width"
-        :collapsed-width="64"
-        :width="240"
-        :collapsed="collapsed"
-        show-trigger
-        @collapse="collapsed = true"
-        @expand="collapsed = false"
-        class="sider"
-      >
+      <div class="custom-sidebar" :class="{ 'sidebar-collapsed': collapsed }">
+        <div class="sidebar-toggle" @click="collapsed = !collapsed">
+          {{ collapsed ? '>' : '<' }}
+        </div>
         <div class="logo-container">
           <div class="logo">
             <span class="cat-emoji">🐈‍⬛</span>
@@ -157,10 +162,6 @@ onMounted(() => {
           <div class="menu-item" :class="{ active: activeMenu === 'home' }" @click="activeMenu = 'home'">
             <div class="menu-icon">🏠</div>
             <div class="menu-label" v-if="!collapsed">首页</div>
-          </div>
-          <div class="menu-item" :class="{ active: activeMenu === 'settings' }" @click="activeMenu = 'settings'">
-            <div class="menu-icon">⚙️</div>
-            <div class="menu-label" v-if="!collapsed">设置</div>
           </div>
           <div class="menu-item" :class="{ active: activeMenu === 'about' }" @click="activeMenu = 'about'">
             <div class="menu-icon">ℹ️</div>
@@ -187,10 +188,15 @@ onMounted(() => {
             {{ isDarkMode ? '暗色模式' : '亮色模式' }}
           </n-tooltip>
         </div>
-      </n-layout-sider>
+      </div>
+
+      <!-- 移动设备上的汉堡菜单按钮 -->
+      <div class="mobile-menu-toggle" @click="collapsed = !collapsed" v-if="isMobile">
+        {{ collapsed ? '☰' : '✕' }}
+      </div>
 
       <!-- 主内容区 -->
-      <n-layout :style="{ paddingLeft: collapsed ? '64px' : '240px' }" class="main-layout">
+      <div class="custom-main-content" :class="{ 'main-with-collapsed-sidebar': collapsed, 'main-with-expanded-sidebar': !collapsed }">
         <n-layout-header class="header">
           <div class="header-content">
             <div class="search-container">
@@ -262,44 +268,7 @@ onMounted(() => {
             </n-card>
           </div>
 
-          <!-- 设置页面 -->
-          <div v-if="activeMenu === 'settings'">
-            <n-card class="settings-card" title="设置" :bordered="false">
-              <n-space vertical>
-                <div class="settings-section">
-                  <h3>主题设置</h3>
-                  <n-space>
-                    <span>暗色模式：</span>
-                    <n-switch v-model:value="isDarkMode" @update:value="toggleDarkMode">
-                      <template #checked>开启</template>
-                      <template #unchecked>关闭</template>
-                    </n-switch>
-                  </n-space>
-                </div>
-
-                <div class="settings-section">
-                  <h3>搜索引擎设置</h3>
-                  <div class="engine-options">
-                    <div class="engine-option-label">默认搜索引擎：</div>
-                    <div class="engine-options-container">
-                      <div
-                        v-for="(engine, key) in searchEngines"
-                        :key="key"
-                        class="engine-option"
-                        :class="{ active: defaultEngine === key }"
-                        @click="defaultEngine = key"
-                      >
-                        {{ engine[0] }}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="settings-tip">
-                    当前默认搜索引擎：{{ searchEngines[defaultEngine] ? searchEngines[defaultEngine][0] : '未设置' }}
-                  </div>
-                </div>
-              </n-space>
-            </n-card>
-          </div>
+          <!-- 设置页面已移除 -->
 
           <!-- 关于页面 -->
           <div v-if="activeMenu === 'about'">
@@ -388,8 +357,8 @@ onMounted(() => {
             </n-card>
           </div>
         </n-layout-content>
-      </n-layout>
-    </n-layout>
+      </div>
+    </div>
   </n-config-provider>
 </template>
 
@@ -418,11 +387,54 @@ html, body {
   background-color: var(--n-color) !important;
 }
 
-/* 布局样式 */
-.layout {
+/* 定义暗色模式和亮色模式的变量 */
+:root {
+  --sidebar-bg-color: #f5f5f5;
+  --main-bg-color: #f5f5f5;
+  --border-color: rgba(128, 128, 128, 0.1);
+}
+
+/* 暗色模式变量 */
+.n-config-provider.n-config-provider--theme-dark,
+.n-config-provider.n-config-provider--theme-dark :root {
+  --sidebar-bg-color: #18181c !important;
+  --main-bg-color: #18181c !important;
+  --border-color: rgba(128, 128, 128, 0.2) !important;
+}
+
+/* 直接设置暗色模式背景 */
+.n-config-provider.n-config-provider--theme-dark .custom-layout,
+.n-config-provider.n-config-provider--theme-dark .custom-sidebar,
+.n-config-provider.n-config-provider--theme-dark .custom-main-content,
+.n-config-provider.n-config-provider--theme-dark .content,
+.n-config-provider.n-config-provider--theme-dark body,
+.n-config-provider.n-config-provider--theme-dark .sidebar-toggle {
+  background-color: #18181c !important;
+}
+
+/* 暗色模式下的卡片和其他元素 */
+.n-config-provider.n-config-provider--theme-dark .n-card {
+  background-color: #252529 !important;
+}
+
+.n-config-provider.n-config-provider--theme-dark .bookmark-card,
+.n-config-provider.n-config-provider--theme-dark .feature-item,
+.n-config-provider.n-config-provider--theme-dark .roadmap-content {
+  background-color: #252529 !important;
+}
+
+/* 暗色模式下的文本颜色 */
+.n-config-provider.n-config-provider--theme-dark {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* 自定义布局样式 */
+.custom-layout {
+  display: flex;
   min-height: 100vh;
   width: 100%;
-  background-color: var(--n-color) !important;
+  background-color: var(--main-bg-color) !important;
+  position: relative;
 }
 
 html, body, #app, .n-config-provider {
@@ -434,15 +446,11 @@ html, body, #app, .n-config-provider {
 }
 
 body {
-  background-color: var(--n-color) !important;
+  background-color: var(--main-bg-color) !important;
 }
 
-.n-layout-sider, .n-layout-sider-scroll-container {
-  background-color: var(--n-color) !important;
-}
-
-/* 侧边栏样式 */
-.sider {
+/* 自定义侧边栏样式 */
+.custom-sidebar {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -450,6 +458,61 @@ body {
   left: 0;
   top: 0;
   z-index: 100;
+  width: 240px;
+  background-color: var(--sidebar-bg-color) !important;
+  transition: width 0.3s;
+  border-right: 1px solid var(--border-color);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-collapsed {
+  width: 64px;
+}
+
+.sidebar-collapsed .menu-icon {
+  margin-right: 0;
+  justify-content: center;
+}
+
+.sidebar-collapsed .menu-item {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background-color: var(--sidebar-bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 101;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 自定义主内容区样式 */
+.custom-main-content {
+  flex: 1;
+  margin-left: 64px; /* 默认使用折叠侧边栏的宽度 */
+  width: calc(100% - 64px);
+  transition: margin-left 0.3s, width 0.3s;
+}
+
+.main-with-collapsed-sidebar {
+  margin-left: 64px;
+  width: calc(100% - 64px);
+}
+
+.main-with-expanded-sidebar {
+  margin-left: 240px;
+  width: calc(100% - 240px);
 }
 
 .logo-container {
@@ -557,20 +620,20 @@ body {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  background-color: var(--n-color) !important;
+  background-color: var(--main-bg-color) !important;
 }
 
 .main-layout {
   transition: padding-left 0.3s;
-  background-color: var(--n-color) !important;
+  background-color: var(--main-bg-color) !important;
 }
 
 .n-layout {
-  background-color: var(--n-color) !important;
+  background-color: var(--main-bg-color) !important;
 }
 
 .n-layout-scroll-container {
-  background-color: var(--n-color) !important;
+  background-color: var(--main-bg-color) !important;
 }
 
 /* 分组卡片样式 */
@@ -604,61 +667,13 @@ body {
   margin-right: 8px;
 }
 
-/* 设置和关于页面样式 */
-.settings-card,
+/* 关于页面样式 */
 .about-card {
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
-.settings-section {
-  margin-bottom: 24px;
-}
-
-.settings-section h3 {
-  margin-bottom: 16px;
-  font-size: 1.1rem;
-}
-
-.settings-tip {
-  margin-top: 8px;
-  font-size: 0.9rem;
-  color: var(--primary-color);
-  opacity: 0.8;
-}
-
-.engine-options {
-  margin-bottom: 16px;
-}
-
-.engine-option-label {
-  margin-bottom: 8px;
-  font-weight: bold;
-}
-
-.engine-options-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.engine-option {
-  padding: 8px 16px;
-  border-radius: 4px;
-  background-color: rgba(128, 128, 128, 0.1);
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.engine-option:hover {
-  background-color: rgba(128, 128, 128, 0.2);
-  transform: translateY(-2px);
-}
-
-.engine-option.active {
-  background-color: var(--primary-color);
-  color: white;
-}
+/* 设置相关样式已移除 */
 
 /* 关于页面特定样式 */
 .about-section {
@@ -764,7 +779,7 @@ body {
   margin-right: 20px;
   position: relative;
   z-index: 1;
-  background-color: var(--n-color);
+  background-color: var(--main-bg-color);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -856,27 +871,91 @@ body {
     width: 100% !important;
   }
 
-  .main-layout {
-    padding-left: 0 !important;
-  }
-
-  .n-layout-sider {
-    position: fixed;
+  /* 移动设备上的侧边栏样式 */
+  .custom-sidebar {
     z-index: 1000;
-    height: 100vh;
-    left: 0;
-    top: 0;
+    transform: translateX(-100%); /* 默认隐藏侧边栏 */
+    transition: transform 0.3s ease;
   }
 
-  .n-layout-sider:not(.n-layout-sider--collapsed) {
+  .custom-sidebar:not(.sidebar-collapsed) {
+    transform: translateX(0); /* 展开时显示 */
+    width: 240px !important;
+  }
+
+  .sidebar-collapsed {
+    transform: translateX(-100%); /* 折叠时完全隐藏 */
+    width: 0 !important;
+    border-right: none;
+  }
+
+  .sidebar-toggle {
+    right: -30px;
+    background-color: var(--sidebar-bg-color);
+    color: inherit;
+    border: 1px solid var(--border-color);
+  }
+
+  /* 移动设备上的主内容区样式 */
+  .custom-main-content {
+    margin-left: 0 !important;
     width: 100% !important;
-    max-width: 100% !important;
+  }
+
+  /* 添加一个汉堡菜单按钮在移动设备上 */
+  .mobile-menu-toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    width: 40px;
+    height: 40px;
+    background-color: var(--sidebar-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .main-with-collapsed-sidebar {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .main-with-expanded-sidebar {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  /* 当侧边栏展开时，添加一个遮罩层 */
+  .custom-layout::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    display: none;
+  }
+
+  .custom-layout:has(.custom-sidebar:not(.sidebar-collapsed))::before {
+    display: block;
+  }
+
+  /* 添加一个汉堡菜单按钮在移动设备上 */
+  .header-content {
+    position: relative;
   }
 
   .n-grid {
     --n-cols-xs: 2 !important;
-    --n-cols-s: 3 !important;
-    --n-cols-m: 4 !important;
+    --n-cols-s: 2 !important;
+    --n-cols-m: 3 !important;
     --n-cols-l: 4 !important;
     --n-cols-xl: 5 !important;
     --n-cols-xxl: 6 !important;
@@ -901,6 +980,43 @@ body {
 
   .group-card {
     margin-bottom: 16px;
+  }
+
+  /* 调整侧边栏菜单项在移动设备上的样式 */
+  .menu-item {
+    padding: 10px;
+    margin: 2px 4px;
+  }
+
+  .menu-icon {
+    font-size: 1.5rem;
+  }
+
+  /* 调整搜索提示在移动设备上的样式 */
+  .search-tip {
+    font-size: 0.7rem;
+    margin: 4px 0 8px;
+  }
+
+  /* 调整卡片在移动设备上的样式 */
+  .n-card__content {
+    padding: 12px !important;
+  }
+
+  /* 调整功能项在移动设备上的样式 */
+  .feature-item, .roadmap-item {
+    flex-direction: column;
+  }
+
+  .feature-icon, .roadmap-icon {
+    margin-bottom: 8px;
+    margin-right: 0;
+  }
+
+  .roadmap-item:not(:last-child)::after {
+    left: 20px;
+    height: calc(100% - 40px);
+    top: 80px;
   }
 }
 </style>
