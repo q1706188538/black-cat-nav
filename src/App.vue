@@ -150,7 +150,6 @@ onMounted(() => {
       <div class="custom-sidebar" :class="{ 'sidebar-collapsed': collapsed }">
         <div class="logo-container">
           <div class="logo">
-            <span class="cat-emoji">🐈‍⬛</span>
             <span class="logo-text" v-if="!collapsed">黑猫查询</span>
           </div>
         </div>
@@ -610,18 +609,15 @@ body {
 .logo {
   display: flex;
   align-items: center;
+  justify-content: center;
   font-size: 1.2rem;
   font-weight: 600;
   font-family: 'Poppins', 'Noto Sans SC', sans-serif;
   letter-spacing: 0.5px;
+  width: 100%;
 }
 
-.cat-emoji {
-  font-size: 1.8rem;
-  margin-right: 8px;
-  display: inline-block;
-  transform: scaleX(-1); /* 水平翻转，使猫头朝右 */
-}
+/* 已删除cat-emoji样式 */
 
 .menu-container {
   flex: 1;
