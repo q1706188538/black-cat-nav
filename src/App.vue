@@ -151,21 +151,27 @@ onMounted(() => {
         <div class="logo-container">
           <div class="logo">
             <span class="cat-emoji">🐈‍⬛</span>
-            <span class="logo-text" v-if="!collapsed">黑猫Web3导航</span>
+            <span class="logo-text" v-if="!collapsed">黑猫查询</span>
           </div>
         </div>
 
         <div class="menu-container">
           <div class="menu-item" :class="{ active: activeMenu === 'home' }" @click="activeMenu = 'home'">
-            <div class="menu-icon">🔍</div>
+            <div class="menu-icon">
+              <img src="/icons/sidebar/查询图标.ico" alt="查询" class="sidebar-icon" />
+            </div>
             <div class="menu-label" v-if="!collapsed">查询</div>
           </div>
           <div class="menu-item" :class="{ active: activeMenu === 'about' }" @click="activeMenu = 'about'">
-            <div class="menu-icon">ℹ️</div>
+            <div class="menu-icon">
+              <img src="/icons/sidebar/关于黑猫图标.ico" alt="关于黑猫" class="sidebar-icon" />
+            </div>
             <div class="menu-label" v-if="!collapsed">关于黑猫</div>
           </div>
           <div class="menu-item" :class="{ active: activeMenu === 'future' }" @click="activeMenu = 'future'">
-            <div class="menu-icon">🔮</div>
+            <div class="menu-icon">
+              <img src="/icons/sidebar/黑猫未来图标.ico" alt="黑猫未来" class="sidebar-icon" />
+            </div>
             <div class="menu-label" v-if="!collapsed">黑猫未来</div>
           </div>
         </div>
@@ -210,6 +216,16 @@ onMounted(() => {
                 </n-button>
               </div>
             </div>
+
+            <!-- 社交媒体链接 -->
+            <div class="social-links">
+              <a href="https://t.me/blakcat_cn" target="_blank" class="social-link" title="Telegram">
+                <img src="/icons/telegram.ico" alt="Telegram" class="social-icon" />
+              </a>
+              <a href="https://x.com/Blackcatquery" target="_blank" class="social-link" title="Twitter">
+                <img src="/icons/twitter.png" alt="Twitter" class="social-icon" />
+              </a>
+            </div>
           </div>
         </n-layout-header>
 
@@ -222,9 +238,7 @@ onMounted(() => {
           <div v-if="activeMenu === 'home'">
             <!-- Web3工具分组 -->
             <n-card class="group-card" title="Web3工具" :bordered="false">
-              <template #header-extra>
-                <span class="category-icon">😻</span>
-              </template>
+              <!-- 移除了分类图标 -->
               <n-grid :x-gap="20" :y-gap="20" :cols="5" style="width: 100%;">
                 <n-grid-item v-for="item in getBookmarksByCategory('Web3工具')" :key="item.title">
                   <div class="bookmark-card" @click="openLink(item.link)">
@@ -248,9 +262,7 @@ onMounted(() => {
 
             <!-- 常用网站分组 -->
             <n-card class="group-card" title="常用网站" :bordered="false">
-              <template #header-extra>
-                <span class="category-icon">😸</span>
-              </template>
+              <!-- 移除了分类图标 -->
               <n-grid :x-gap="20" :y-gap="20" :cols="5" style="width: 100%;">
                 <n-grid-item v-for="item in getBookmarksByCategory('常用网站')" :key="item.title">
                   <div class="bookmark-card" @click="openLink(item.link)">
@@ -607,6 +619,8 @@ body {
 .cat-emoji {
   font-size: 1.8rem;
   margin-right: 8px;
+  display: inline-block;
+  transform: scaleX(-1); /* 水平翻转，使猫头朝右 */
 }
 
 .menu-container {
@@ -640,10 +654,30 @@ body {
   align-items: center;
   justify-content: center;
   transition: transform 0.3s;
+  width: 32px;
+  height: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-icon {
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.25); /* 缩小到原来的1/4，但保持原始分辨率 */
+  transform-origin: center;
 }
 
 .menu-item:hover .menu-icon {
   transform: scale(1.2);
+}
+
+.menu-item:hover .sidebar-icon {
+  transform: translate(-50%, -50%) scale(0.3); /* 悬停时稍微放大图标 */
 }
 
 .menu-label {
@@ -672,7 +706,7 @@ body {
 
 .header-content {
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* 改为两端对齐，方便放置社交媒体链接 */
   align-items: center;
   width: 100%;
   max-width: 1200px; /* 添加最大宽度，确保在超宽屏幕上内容不会过于分散 */
@@ -914,7 +948,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent;
+  color: transparent; /* 标准属性替代text-fill-color */
 }
 
 .roadmap-item {
@@ -1037,6 +1071,7 @@ body {
   /* 自动换行设置 */
   display: -webkit-box;
   -webkit-line-clamp: 2; /* 限制最多显示2行 */
+  line-clamp: 2; /* 标准属性，兼容性 */
   -webkit-box-orient: vertical;
   white-space: normal; /* 允许文本换行 */
   word-break: break-word; /* 允许在单词内换行 */
@@ -1154,6 +1189,16 @@ body {
     padding-right: 5px; /* 为右侧留出一点空间 */
   }
 
+  /* 移动设备上的社交媒体链接 */
+  .social-links {
+    gap: 8px;
+  }
+
+  .social-link {
+    width: 32px;
+    height: 32px;
+  }
+
   /* 移动设备上的搜索按钮样式已移至全局样式 */
 
   .bookmark-card {
@@ -1224,9 +1269,19 @@ body {
   }
 
   .search-container {
-    max-width: 320px; /* 超小屏幕上进一步减小搜索框的最大宽度 */
+    max-width: 280px; /* 超小屏幕上进一步减小搜索框的最大宽度 */
     padding-left: 38px; /* 为左侧的汉堡菜单留出空间 */
     padding-right: 4px; /* 为右侧留出一点空间 */
+  }
+
+  /* 超小屏幕上的社交媒体链接 */
+  .social-links {
+    gap: 4px;
+  }
+
+  .social-link {
+    width: 28px;
+    height: 28px;
   }
 
   .search-button {
@@ -1351,5 +1406,37 @@ body {
   .n-card__content {
     padding: 24px !important;
   }
+}
+
+/* 社交媒体链接样式 */
+.social-links {
+  display: flex;
+  gap: 16px;
+  margin-right: 10px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--sidebar-bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.social-link:hover {
+  transform: scale(1.1);
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
 }
 </style>
