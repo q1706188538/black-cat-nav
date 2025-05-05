@@ -125,6 +125,16 @@ const handleMenuSelect = (key) => {
   activeCategory.value = key
 }
 
+// 复制文本到剪贴板
+const copyToClipboard = (text) => {
+  navigator.clipboard.writeText(text).then(() => {
+    // 可以在这里添加复制成功的提示
+    alert('合约地址已复制到剪贴板');
+  }).catch(err => {
+    console.error('复制失败:', err);
+  });
+}
+
 // 初始化
 onMounted(() => {
   // 默认显示Web3侧边栏
@@ -214,6 +224,12 @@ onMounted(() => {
                   <n-icon><SearchIcon /></n-icon>
                 </n-button>
               </div>
+              <div class="search-tip">
+                提示：输入关键字+空格可切换搜索引擎，如"g google"使用Google搜索
+              </div>
+              <div class="search-tip contract-address" @click="copyToClipboard('0xb048fda90e74931319eaca04068d3719b4684444')" title="点击复制合约地址">
+                CA:0xb048fda90e74931319eaca04068d3719b4684444
+              </div>
             </div>
 
             <!-- 社交媒体链接 -->
@@ -229,9 +245,6 @@ onMounted(() => {
         </n-layout-header>
 
         <n-layout-content class="content">
-          <div class="search-tip">
-            提示：输入关键字+空格可切换搜索引擎，如"g google"使用Google搜索
-          </div>
 
           <!-- 主页内容 -->
           <div v-if="activeMenu === 'home'">
@@ -715,9 +728,9 @@ body {
 
 .search-container {
   width: 100%;
-  max-width: 450px; /* 进一步缩小搜索框的最大宽度 */
+  max-width: 600px; /* 再次增加搜索框的最大宽度 */
   margin: 0 auto;
-  padding-left: 45px; /* 为左侧的汉堡菜单留出更多空间 */
+  padding-left: 65px; /* 增加左侧内边距，使搜索框向右移动 */
   padding-right: 5px; /* 为右侧留出一点空间，防止放大镜按钮超出屏幕 */
   box-sizing: border-box; /* 确保内边距不会增加元素的宽度 */
 }
@@ -752,8 +765,52 @@ body {
 .search-tip {
   font-size: 0.8rem;
   opacity: 0.7;
-  text-align: center;
-  margin: 8px 0 12px;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  padding: 0;
+  margin: 4px 0 0 0;
+  line-height: 1.2;
+}
+
+.contract-address {
+  font-weight: 600;
+  opacity: 1;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block; /* 改为块级元素，确保占据整行 */
+  color: #e67e22; /* 橙色 */
+  font-size: 1.1rem; /* 更大的字体大小 */
+  line-height: 1.4;
+  width: 100%; /* 使用100%宽度 */
+  white-space: normal; /* 允许文本换行 */
+  overflow: visible; /* 显示溢出部分 */
+  word-break: break-all; /* 允许在任何字符间换行 */
+  padding-right: 10px; /* 右侧添加一些内边距，防止文本贴近屏幕边缘 */
+  box-sizing: border-box; /* 确保内边距不会增加元素的宽度 */
+}
+
+.n-config-provider.n-config-provider--theme-dark .contract-address {
+  color: #f39c12; /* 暗色模式下稍微亮一点的橙色 */
+}
+
+.contract-address:hover {
+  opacity: 1;
+  color: #d35400; /* 悬停时更深的橙色 */
+  transform: translateY(-1px);
+}
+
+.n-config-provider.n-config-provider--theme-dark .contract-address:hover {
+  color: #f1c40f; /* 暗色模式下悬停时的黄色 */
+}
+
+.contract-address:active {
+  transform: translateY(0);
 }
 
 /* 内容区样式 */
@@ -1180,8 +1237,8 @@ body {
 
   .search-container {
     width: 100%;
-    max-width: 380px; /* 移动设备上进一步减小搜索框的最大宽度 */
-    padding-left: 42px; /* 为左侧的汉堡菜单留出更多空间 */
+    max-width: 500px; /* 再次增加移动设备上搜索框的最大宽度 */
+    padding-left: 55px; /* 增加左侧内边距，使搜索框向右移动 */
     padding-right: 5px; /* 为右侧留出一点空间 */
   }
 
@@ -1232,7 +1289,14 @@ body {
   /* 调整搜索提示在移动设备上的样式 */
   .search-tip {
     font-size: 0.7rem;
-    margin: 4px 0 8px;
+    margin-top: 3px;
+  }
+
+  /* 调整合约地址在移动设备上的样式 */
+  .contract-address {
+    font-size: 0.95rem;
+    word-break: break-all;
+    line-height: 1.3;
   }
 
   /* 调整卡片在移动设备上的样式 */
@@ -1265,8 +1329,8 @@ body {
   }
 
   .search-container {
-    max-width: 280px; /* 超小屏幕上进一步减小搜索框的最大宽度 */
-    padding-left: 38px; /* 为左侧的汉堡菜单留出空间 */
+    max-width: 380px; /* 再次增加超小屏幕上搜索框的最大宽度 */
+    padding-left: 48px; /* 增加左侧内边距，使搜索框向右移动 */
     padding-right: 4px; /* 为右侧留出一点空间 */
   }
 
@@ -1285,6 +1349,14 @@ body {
     min-width: 32px !important;
     width: 32px !important;
     height: 32px !important;
+  }
+
+  /* 调整合约地址在超小屏幕上的样式 */
+  .contract-address {
+    font-size: 0.85rem;
+    word-break: break-all;
+    line-height: 1.2;
+    padding-right: 5px;
   }
 
   .main-sidebar-toggle {
