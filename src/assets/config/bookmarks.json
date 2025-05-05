@@ -7,6 +7,11 @@
         "title": "BSC链查询工具",
         "link": "bsc.blakcat.top",
         "favicon": "/icons/bsc链查询工具.ico"
+      },
+      {
+        "title": "Jager批量空投",
+        "link": "jager.blakcat.top",
+        "favicon": "/icons/jager批量空投.ico"
       }
     ]
   },
