@@ -92,7 +92,7 @@ const updateDefaultEngine = (value) => {
 // 打开链接
 const openLink = (link) => {
   // 特殊处理blakcat.top子域名链接
-  if (link === "bsc.blakcat.top" || link === "jager.blakcat.top") {
+  if (link === "bsc.blakcat.top" || link === "jager.blakcat.top" || link === "sol.blakcat.top") {
     window.open('http://' + link, '_blank')
     return
   }

@@ -9,9 +9,14 @@
         "favicon": "/icons/bsc链查询工具.ico"
       },
       {
-        "title": "Jager批量空投",
+        "title": "BNB批量工具",
         "link": "jager.blakcat.top",
         "favicon": "/icons/jager批量空投.ico"
+      },
+      {
+        "title": "SOL链查询工具",
+        "link": "sol.blakcat.top",
+        "favicon": "/icons/solana.ico"
       }
     ]
   },
